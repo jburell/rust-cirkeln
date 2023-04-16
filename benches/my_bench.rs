@@ -1,16 +1,24 @@
-	use criterion::{black_box, criterion_group, criterion_main, Criterion};
-	use std::*;
-  use rustcirkeln::*;
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use std::*;
+use rustcirkeln::*;
 
-	pub fn criterion_benchmark(c: &mut Criterion) {
-    let file_path = "romeo.txt";
-    let file = fs::File::open(file_path).unwrap();
-    let all = fs::read_to_string(file_path).unwrap();
-    c.bench_function("search_1", |b| b.iter(|| search("thou", all.as_str())));
-	}
+mod perf;
 
-	criterion_group!(benches, criterion_benchmark);
-	criterion_main!(benches);
+pub fn search_1(c: &mut Criterion) {
+  let file_path = "romeo.txt";
+  let file = fs::File::open(file_path).unwrap();
+  let all = fs::read_to_string(file_path).unwrap();
+  c.bench_function("search_1", |b| b.iter(|| search("thou", all.as_str())));
+}
+
+criterion_group!(
+  name = benches;
+  // This can be any expression that returns a `Criterion` object.
+  config = Criterion::default().with_profiler(perf::FlamegraphProfiler::new(100));
+  targets = search_1
+);
+
+criterion_main!(benches);
 
 //	//#[test]
 //	#[bench]

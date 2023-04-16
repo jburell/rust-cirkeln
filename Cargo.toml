@@ -12,6 +12,7 @@ crate-type = ["lib"]
 
 [dependencies]
 criterion = "0.4.0"
+pprof = {version = "0.11.1", features = ["flamegraph"]}
 
 [[bench]]
 name = "my_bench"
