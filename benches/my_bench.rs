@@ -1,35 +1,29 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::*;
-use rustcirkeln::*;
 
 mod perf;
 
 pub fn search_1(c: &mut Criterion) {
   let file_path = "romeo.txt";
-  let file = fs::File::open(file_path).unwrap();
   let all = fs::read_to_string(file_path).unwrap();
-  c.bench_function("search_1", |b| b.iter(|| search("thou", all.as_str())));
+  //let all_as_res_lines = 
+  //  all
+  //  .clone()
+  //  .as_str()
+  //  .lines()
+  //  .fold(Vec::new(), |mut acc, l| {
+  //    acc.push(Ok(l.to_string())); 
+  //    acc
+  //  });
+
+  c.bench_function("search_1", |b| b.iter(|| rustcirkeln::search_1("thou", black_box(all.as_str()))));
+  c.bench_function("search_ci", |b| b.iter(|| rustcirkeln::search_case_insensitive("thou", black_box(all.as_str()))));
+  //c.bench_function("search_2", |b| b.iter(|| rustcirkeln::search_2("thou", black_box(all_as_res_lines))));
 }
 
 criterion_group!(
   name = benches;
-  // This can be any expression that returns a `Criterion` object.
-  config = Criterion::default().with_profiler(perf::FlamegraphProfiler::new(100));
+  config = Criterion::default().with_profiler(perf::FlamegraphProfiler::new(1000));
   targets = search_1
 );
-
 criterion_main!(benches);
-
-//	//#[test]
-//	#[bench]
-//	fn do_test(bencher: &mut Bencher) -> impl Termination {
-//		let file_path = "romeo.txt";
-//		let file = File::open(file_path).unwrap();
-//		let all = fs::read_to_string(file_path).unwrap();
-//		let res = search("thou", all.as_str());
-//		//let buf: BufReader<File> = BufReader::new(file);
-//		//let content = buf.lines();
-//		//let res = search("thou", content.into_iter());
-//		println!("Number of rows: {}", res.len());
-//    assert!(res.len() > 0);
-//  }
