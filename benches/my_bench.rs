@@ -1,6 +1,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::*;
 
+use rustcirkeln::*;
 mod perf;
 
 pub fn search_1(c: &mut Criterion) {
@@ -16,9 +17,9 @@ pub fn search_1(c: &mut Criterion) {
   //    acc
   //  });
 
-  c.bench_function("search_1", |b| b.iter(|| rustcirkeln::search_1("thou", black_box(all.as_str()))));
-  c.bench_function("search_ci", |b| b.iter(|| rustcirkeln::search_case_insensitive("thou", black_box(all.as_str()))));
-  //c.bench_function("search_2", |b| b.iter(|| rustcirkeln::search_2("thou", black_box(all_as_res_lines))));
+  c.bench_function("search_1", |b| b.iter(|| mini_grep::search_1("thou", black_box(all.as_str()))));
+  c.bench_function("search_ci", |b| b.iter(|| mini_grep::search_case_insensitive("thou", black_box(all.as_str()))));
+  //c.bench_function("search_2", |b| b.iter(|| mini_grep::search_2("thou", black_box(all_as_res_lines))));
 }
 
 criterion_group!(
